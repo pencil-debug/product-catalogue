@@ -1,21 +1,28 @@
-pipeline
-{
+pipeline {
     agent any
-    
+
     environment {
         IMAGE_NAME = "product-catalogue"
-        IMAGE_TAG = "${BUILD_NUMBER}"
     }
+
     stages {
 
-
-        stage('Build docker image') {
+        stage('Checkout') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                checkout scm
             }
         }
 
-        stage('Docker login and push') {
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                    docker build --no-cache \
+                    -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                '''
+            }
+        }
+
+        stage('Docker Login and Push') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -25,11 +32,16 @@ pipeline
                     )
                 ]) {
                     sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        echo "$DOCKER_PASS" | docker login \
+                            -u "$DOCKER_USER" \
+                            --password-stdin
 
-                    docker tag $IMAGE_NAME:$IMAGE_TAG $DOCKER_USER/$IMAGE_NAME:v3
+                        docker tag \
+                            ${IMAGE_NAME}:${BUILD_NUMBER} \
+                            $DOCKER_USER/${IMAGE_NAME}:${BUILD_NUMBER}
 
-                    docker push $DOCKER_USER/$IMAGE_NAME:v3
+                        docker push \
+                            $DOCKER_USER/${IMAGE_NAME}:${BUILD_NUMBER}
                     '''
                 }
             }
@@ -37,11 +49,31 @@ pipeline
 
         stage('Deploy Kubernetes') {
             steps {
-                sh '''
-                kubectl apply -f k8s/
-                '''
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh '''
+                        kubectl apply -f k8s/configmap.yaml
+                        kubectl apply -f k8s/service.yaml
+
+                        kubectl set image deployment/product-catalogue \
+                            product-catalogue=$DOCKER_USER/$IMAGE_NAME:${BUILD_NUMBER}
+
+                        kubectl rollout status deployment/product-catalogue
+                    '''
+                }
             }
         }
     }
-    
+
+    post {
+        success {
+            echo "Deployment successful!"
+            echo "Image: ${IMAGE_NAME}:${BUILD_NUMBER}"
+        }
+    }
 }
