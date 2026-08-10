@@ -19,14 +19,14 @@ jobs:
           node-version: 20
 
       - name: Validate JavaScript
-        run: node --check script.js
+        run: node --check src/script.js
 
       - name: Check required files
         run: |
-          test -f index.html
-          test -f style.css
-          test -f script.js
-          test -f config.js
+          test -f src/index.html
+          test -f src/style.css
+          test -f src/script.js
+          test -f src/config.js
           echo "All required files are present."
 
       - name: Validation successful
