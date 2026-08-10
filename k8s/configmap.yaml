@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-catalogue-config
+data:
+  APP_TITLE: "Product Catalogue"
+  ENVIRONMENT: "production"
