@@ -32,7 +32,7 @@ const products = [
   },
 ];
 
-const productContainer = document.getElementById("product-list");
+const productContainer = document.getElementById("product-container");
 
 products.forEach(function (product) {
   const card = document.createElement("div");
@@ -40,10 +40,10 @@ products.forEach(function (product) {
   card.className = "product-card";
 
   card.innerHTML = `
-        <h2>${product.name}</h2>
-        <p>${product.description}</p>
-        <p class="price">₹${product.price}</p>
-    `;
+    <h2>${product.name}</h2>
+    <p>${product.description}</p>
+    <p class="price">₹${product.price}</p>
+  `;
 
   productContainer.appendChild(card);
 });

@@ -27,9 +27,9 @@ pipeline
                     sh '''
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
-                    docker tag $IMAGE_NAME:$IMAGE_TAG $DOCKER_USER/$IMAGE_NAME:v2
+                    docker tag $IMAGE_NAME:$IMAGE_TAG $DOCKER_USER/$IMAGE_NAME:v3
 
-                    docker push $DOCKER_USER/$IMAGE_NAME:v2
+                    docker push $DOCKER_USER/$IMAGE_NAME:v3
                     '''
                 }
             }
