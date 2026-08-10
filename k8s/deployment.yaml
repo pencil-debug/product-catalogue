@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product-catalogue
-          image: boxofpencil/product-catalogue:v1
+          image: boxofpencil/product-catalogue:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
