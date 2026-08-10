@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product-catalogue
-          image: YOUR_DOCKER_USERNAME/product-catalogue:latest
+          image: boxofpencil/product-catalogue:v1
           ports:
             - containerPort: 80
           env:

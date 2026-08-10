@@ -3,7 +3,7 @@ pipeline
     agent any
     
     environment {
-        IMAGE_NAME = "boxofpencil/product-catalogue"
+        IMAGE_NAME = "product-catalogue"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
     stages {
