@@ -1,0 +1,33 @@
+name: Validate Product Catalogue
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate JavaScript
+        run: node --check script.js
+
+      - name: Check required files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f config.js
+          echo "All required files are present."
+
+      - name: Validation successful
+        run: echo "Product Catalogue validation completed successfully."
