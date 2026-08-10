@@ -36,6 +36,7 @@ const productContainer = document.getElementById("product-container");
 products.forEach(function(product) {
 
     const card = document.createElement("div");
+
     card.className = "product-card";
 
     card.innerHTML = `
